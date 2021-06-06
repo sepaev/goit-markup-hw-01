@@ -1,3 +1,4 @@
+'use strict'
 export default [
   {
     preview:
@@ -63,3 +64,35 @@ export default [
     description: 'Lighthouse Coast Sea',
   },
 ];
+
+import defaultExport from "/gallery-items.js";
+
+const refs = {
+  pictures: [...defaultExport],
+  galery: document.querySelector('.js-gallery'),
+  lightbox: document.querySelector('.js-lightbox'),
+}
+// создание галереи
+const createGalery = () => {
+  let htmlText = '';
+  refs.pictures.map(({ preview, original, description }) => {
+    htmlText += `<li class="gallery__item">
+                <a
+                  class="gallery__link"
+                  href="${original}"
+                >
+                  <img
+                    class="gallery__image"
+                    src="${preview}"
+                    data-source="${original}"
+                    alt="${description}"
+                  />
+                </a>
+              </li>`
+  });
+  refs.galery.innerHTML = htmlText;
+}
+
+createGalery();
+
+  // event.preventDefault();
