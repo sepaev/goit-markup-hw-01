@@ -67,13 +67,23 @@ export default [
 
 import defaultExport from "/gallery-items.js";
 
+
+
 // создание переменных
 const refs = {
   pictures: [...defaultExport],
   galery: document.querySelector('.js-gallery'),
   lightbox: document.querySelector('.js-lightbox'),
-  lightboxImage:  document.querySelector('.lightbox__image'),
+  lightboxImage: document.querySelector('.lightbox__image'),
+  body: document.querySelector('body'),
+  closeButton: document.querySelector('button[data-action="close-lightbox"]'),
+  changeBigPicture(src, alt) {
+    this.lightboxImage.src = src;
+    this.lightboxImage.alt = alt;
+  },
 }
+
+
 
 // создание галереи
 const createGalery = () => {
@@ -97,33 +107,72 @@ const createGalery = () => {
 }
 createGalery();
 
-// обрабатываем клик на галерее и открываем модалку
 
+
+// обрабатываем клик на галерее и открываем модалку
 const openModalWindow = (e) => {
   e.preventDefault();
   if (e.target.nodeName != 'IMG') return
+
+  refs.changeBigPicture(e.target.dataset.source, e.target.attributes.alt.nodeValue);
   refs.lightbox.classList.add('is-open');
-  changeSrcOfPicture(e.target.dataset.source, refs.lightboxImage);
+  refs.body.style.overflow = 'hidden';
 }
-
-const changeSrcOfPicture = (src, elem) => {
-  elem.src = src;
-}
-
 refs.galery.addEventListener('click', openModalWindow);
 
-// Обрабатываем клик на кнопку закрытия или escape или 
+
+
+// обрабатываем клик на кнопку закрытия или overlay
 
 const closeModalWindow = e => {
   e.preventDefault();
   if (e.target.nodeName === 'IMG') return
+  if (!refs.lightbox.classList.contains('is-open')) return
   
+  refs.changeBigPicture('', '');
+  refs.lightbox.classList.remove('is-open');
+  refs.body.style.overflow = 'initial';
 }
-// создаем слушателя
-// проверяем клик по нужному месту
-// закрываем модалку
-// убираем картинку с модалки
-
-
-
 refs.lightbox.addEventListener('click', closeModalWindow);
+
+
+
+// работа с кнопками Escape, ArrowLeft, ArrowRight
+const showLeftPicture = () => {
+  const prevPicture = [];
+  refs.pictures.map((picture, index, array) => {
+    if (picture.original === refs.lightboxImage.src) {
+      prevPicture.push(index > 0 ? array[index - 1] : array[array.length - 1]);
+    };
+  });
+  refs.changeBigPicture(prevPicture[0].original, prevPicture[0].description);
+}
+
+const showRightPicture = () => {
+  const prevPicture = [];
+  refs.pictures.map((picture, index, array) => {
+    if (picture.original === refs.lightboxImage.src) {
+      prevPicture.push(index === array.length - 1 ? array[0] : array[index + 1]);
+    };
+  });
+  refs.changeBigPicture(prevPicture[0].original, prevPicture[0].description);
+}
+
+document.addEventListener('keydown', (event) => {
+  if (!refs.lightbox.classList.contains('is-open')) return
+
+  switch (event.code) {
+    case 'Escape':
+      closeModalWindow(event);
+      break;
+    
+    case 'ArrowLeft':
+      showLeftPicture(event);
+      break;
+    
+    case 'ArrowRight':
+      showRightPicture(event);
+      break;
+  }
+});
+//refs.closeButton.addEventListener('click', closeModalWindow);// работает и без этого
