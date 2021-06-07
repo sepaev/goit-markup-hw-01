@@ -1,5 +1,6 @@
 'use strict'
-export default [
+// export default [
+  const defaultExport = [
   {
     preview:
       'https://cdn.pixabay.com/photo/2019/05/14/16/43/himilayan-blue-poppy-4202825__340.jpg',
@@ -65,7 +66,7 @@ export default [
   },
 ];
 
-import defaultExport from "/gallery-items.js";
+// import defaultExport from "/gallery-items.js";
 
 
 
