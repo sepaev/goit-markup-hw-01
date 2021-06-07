@@ -67,11 +67,14 @@ export default [
 
 import defaultExport from "/gallery-items.js";
 
+// создание переменных
 const refs = {
   pictures: [...defaultExport],
   galery: document.querySelector('.js-gallery'),
   lightbox: document.querySelector('.js-lightbox'),
+  lightboxImage:  document.querySelector('.lightbox__image'),
 }
+
 // создание галереи
 const createGalery = () => {
   let htmlText = '';
@@ -92,7 +95,35 @@ const createGalery = () => {
   });
   refs.galery.innerHTML = htmlText;
 }
-
 createGalery();
 
-  // event.preventDefault();
+// обрабатываем клик на галерее и открываем модалку
+
+const openModalWindow = (e) => {
+  e.preventDefault();
+  if (e.target.nodeName != 'IMG') return
+  refs.lightbox.classList.add('is-open');
+  changeSrcOfPicture(e.target.dataset.source, refs.lightboxImage);
+}
+
+const changeSrcOfPicture = (src, elem) => {
+  elem.src = src;
+}
+
+refs.galery.addEventListener('click', openModalWindow);
+
+// Обрабатываем клик на кнопку закрытия или escape или 
+
+const closeModalWindow = e => {
+  e.preventDefault();
+  if (e.target.nodeName === 'IMG') return
+  
+}
+// создаем слушателя
+// проверяем клик по нужному месту
+// закрываем модалку
+// убираем картинку с модалки
+
+
+
+refs.lightbox.addEventListener('click', closeModalWindow);
